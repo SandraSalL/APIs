@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #out {
+            text-align: center;
+        }
+
+        #botones {
+            text-align: center;
+        }
+
+        button {
+            background-color: rgb(255,0,0);
+            color: black;
+        }
+    </style>
+    <script>
+        if (window.File && window.FileReader && window.FileList) {
+            console.log("Todas las APIs soportadas");
+        } else {
+            alert("La API de File no es soportada por este navegador");
+        }
+
+        function mostrarBotones() {
+            document.getElementById('botones').hidden = false;
+        }
+
+        function handleFileSelect(evt) {
+            var f = evt.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = (function (theFile) {
+                return function (e) {
+                    var div = document.createElement('div');
+                    div.innerHTML = `
+                        <video id="movie" controls autoplay loop width="620">
+                            <source src="${e.target.result}" type="${theFile.type}">
+                            Tu reproductor se está cargando
+                        </video>` ;
+                    document.getElementById('out').insertBefore(div, null);
+                    alert("Video cargando...");
+                    mostrarBotones();
+                };
+            })(f);
+            reader.readAsDataURL(f);
+        }
+    </script>
+
+    <title>Ejercicio API's</title>
+</head>
+<body>
+    <h3>Cargar fichero de video</h3>
+    <input type="file" id="file" accept="video/*" onchange="handleFileSelect(event)" />
+    <p></p>
+    <output id="out"></output>
+    <div id="botones" hidden>
+        <button onclick="document.getElementById('movie').play()">Reproducir</button>
+        <button onclick="document.getElementById('movie').pause()">Pausar</button>
+        <button onclick="try{document.getElementById('movie').volume += 0.2} catch(error){}">Subir Volumen</button>
+        <button onclick="try{document.getElementById('movie').volume -= 0.2} catch(error){}">Bajar Volumen</button>
+    </div>
+</body>
+</html>
